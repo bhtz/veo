@@ -1,13 +1,14 @@
 'use strict';
 
-var download = require('downloadjs'); 
-var webrtc, socket, _$scope, _toastr;
+var download = require('downloadjs');
+var webrtc, socket, _$scope, _toastr, _$sce;
 
 // RoomCtrl class
-function RoomCtrl($routeParams, $scope, toastr) {
+function RoomCtrl($sce, $routeParams, $scope, toastr) {
     _$scope = $scope;
     _toastr = toastr;
-    
+    _$sce = $sce;
+
     this.roomId = $routeParams.id;
     this.username = window.veo.username;
     this.isMute = false;
@@ -15,27 +16,29 @@ function RoomCtrl($routeParams, $scope, toastr) {
     this.peers = [];
     this.chatMsgs = [];
     this.url = window.location.href;
-    
+
     this.initializeWebRtc();
 }
 
 RoomCtrl.prototype.initializeWebRtc = function () {
     socket = io();
-    
+
     webrtc = new SimpleWebRTC({
         localVideoEl: 'local',
-        remoteVideosEl: 'remotes',
-        autoRequestMedia: true
+        remoteVideosEl: '',
+        autoRequestMedia: true,
+        nick: this.username
     });
 
     webrtc.on('readyToCall', function () {
         var room = 'veo_' + this.roomId;
         webrtc.joinRoom('veo-' + room);
-        socket.emit('create_channel', {room: room, username: this.username});
+        socket.emit('create_channel', { room: room, username: this.username });
     }.bind(this));
 
     webrtc.on('createdPeer', function (peer) {
         console.log('createdPeer', peer);
+
         peer.on('fileTransfer', function (metadata, receiver) {
             console.log('incoming filetransfer', metadata);
             receiver.on('progress', function (bytesReceived) {
@@ -48,22 +51,24 @@ RoomCtrl.prototype.initializeWebRtc = function () {
             });
         });
 
-        this.peers.push(peer);
     }.bind(this));
 
     webrtc.on('videoAdded', function (video, peer) {
         console.log('video added', peer);
-    });
+        peer.videoDOM = _$sce.trustAsHtml(peer.videoEl.outerHTML);
+        this.peers.push(peer);
+        _$scope.$apply();
+    }.bind(this));
 
     webrtc.on('mute', function (data) {
         console.log('on mute', data);
     });
-    
-    socket.on('chat_msg', function(msg){
+
+    socket.on('chat_msg', function (msg) {
         this.chatMsgs.unshift(msg);
         _$scope.$apply();
     }.bind(this));
-    
+
     var self = this;
     $('#fileselector').change(function () {
         var file = this.files[0];
@@ -94,10 +99,15 @@ RoomCtrl.prototype.onCopySuccess = function () {
 };
 
 RoomCtrl.prototype.sendMsg = function () {
-    if(this.newChatMsg != ''){
+    if (this.newChatMsg != '') {
         socket.emit('chat_msg', this.newChatMsg);
     }
-    this.newChatMsg = '';  
+    this.newChatMsg = '';
 };
+
+RoomCtrl.prototype.log = function (peer) {
+    console.log(peer);
+    _toastr.info('not implemented yet');
+}
 
 module.exports = RoomCtrl;

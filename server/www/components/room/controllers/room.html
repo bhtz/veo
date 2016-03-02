@@ -1,11 +1,17 @@
 <style>
-    #remotes > video {
+    video {
         width: 100%;
+    }
+    
+    .video_element {
+        float: left;
+        margin: 10px;
+        width: 400px;
     }
 </style>
 
 <section ng-controller="RoomCtrl as vm">
-    
+
     <div class="row">
         <div class="col-md-12">
             <button class="btn btn-default" clipboard text="vm.url" on-copied="vm.onCopySuccess()">Share room</button>
@@ -14,8 +20,10 @@
     <br>
 
     <div class="row">
-        <div class="col-md-3">
-            <div class="panel panel-default">
+
+        <div class="col-md-9">
+
+            <div class="panel panel-default video_element">
                 <div class="panel-heading text-center">{{vm.username}}</div>
                 <div class="panel-body">
                     <video id="local" style="width:100%;"></video>
@@ -35,10 +43,26 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6">
-            <div id="remotes"></div>
+            <div class="panel panel-default video_element" ng-repeat="peer in vm.peers track by $index">
+                <div class="panel-heading text-center">{{peer.nick}}</div>
+                <div class="panel-body">
+                    <div ng-bind-html="peer.videoDOM"></div>
+
+                    <div class="btn-group pull-right" role="group" aria-label="...">
+                        <button class=" btn btn-default" ng-click="vm.log(peer)">
+                            <i class="fa fa-volume-off" ng-show="!vm.isMute"></i>
+                            <i class="fa fa-volume-up" ng-show="vm.isMute"></i>
+                        </button>
+                        <button class="btn btn-default" ng-click="vm.log(peer)">
+                            <i class="fa fa-play" ng-show="!vm.isPlaying"></i>
+                            <i class="fa fa-pause" ng-show="vm.isPlaying"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
         </div>
 
         <div class="col-md-3">
