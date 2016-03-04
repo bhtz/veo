@@ -60,6 +60,13 @@ RoomCtrl.prototype.initializeWebRtc = function () {
         _$scope.$apply();
     }.bind(this));
 
+    webrtc.on('videoRemoved', function (video, peer) {
+        _.remove(this.peers, function (item) {
+            return item.id == peer.id;
+        });
+        _$scope.$apply();
+    }.bind(this));
+
     webrtc.on('mute', function (data) {
         console.log('on mute', data);
     });
