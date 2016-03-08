@@ -1,6 +1,7 @@
 'use strict';
 
 var download = require('downloadjs');
+var _ = require('lodash');
 var webrtc, socket, _$scope, _toastr, _$sce;
 
 // RoomCtrl class
@@ -41,13 +42,17 @@ RoomCtrl.prototype.initializeWebRtc = function () {
 
         peer.on('fileTransfer', function (metadata, receiver) {
             console.log('incoming filetransfer', metadata);
+            _toastr.info('incoming filetransfer');
+            
             receiver.on('progress', function (bytesReceived) {
                 console.log('receive progress', bytesReceived, 'out of', metadata.size);
             });
+            
             receiver.on('receivedFile', function (file, metadata) {
                 console.log('received file', metadata.name, metadata.size);
                 download(file, metadata.name, null);
                 receiver.channel.close();
+                _toastr.success('File transfert success');
             });
         });
 
@@ -75,11 +80,17 @@ RoomCtrl.prototype.initializeWebRtc = function () {
         this.chatMsgs.unshift(msg);
         _$scope.$apply();
     }.bind(this));
+};
 
-    var self = this;
-    $('#fileselector').change(function () {
-        var file = this.files[0];
-        self.peers[0].sendFile(file);
+RoomCtrl.prototype.transfertFile = function(element){
+    var peerId = $(element).data('peer');
+    var peer = _.find(this.peers, {id: peerId});
+    var file = element.files[0];
+    
+    var sender = peer.sendFile(file);
+    _toastr.info('sending file');
+    sender.on('complete', function(){
+        _toastr.success('File transfert success');
     });
 };
 

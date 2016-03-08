@@ -27,9 +27,6 @@
                 <div class="panel-heading text-center">{{vm.username}}</div>
                 <div class="panel-body">
                     <video id="local" style="width:100%;"></video>
-                    <label class="btn btn-primary" for="fileselector">
-                        <input class="pull-left btn btn-primary" type="file" id="fileselector" style="display:none;"> Transfert file
-                    </label>
 
                     <div class="btn-group pull-right" role="group" aria-label="...">
                         <button class=" btn btn-default" ng-click="vm.toggleMute()">
@@ -44,21 +41,15 @@
                 </div>
             </div>
 
-            <div class="panel panel-default video_element" ng-repeat="peer in vm.peers track by $index">
+            <div class="panel panel-default video_element animated bounceIn" ng-repeat="peer in vm.peers track by $index">
                 <div class="panel-heading text-center">{{peer.nick}}</div>
                 <div class="panel-body">
                     <div ng-bind-html="peer.videoDOM"></div>
 
-                    <div class="btn-group pull-right" role="group" aria-label="...">
-                        <button class=" btn btn-default" ng-click="vm.log(peer)">
-                            <i class="fa fa-volume-off" ng-show="!vm.isMute"></i>
-                            <i class="fa fa-volume-up" ng-show="vm.isMute"></i>
-                        </button>
-                        <button class="btn btn-default" ng-click="vm.log(peer)">
-                            <i class="fa fa-play" ng-show="!vm.isPlaying"></i>
-                            <i class="fa fa-pause" ng-show="vm.isPlaying"></i>
-                        </button>
-                    </div>
+                    <label class="btn btn-default pull-right" for="fileselector" title="Transfert some files">
+                        <input type="file" id="fileselector" data-peer="{{peer.id}}" onchange="angular.element(this).controller().transfertFile(this)" style="display:none;">
+                        <i class="fa fa-upload"></i>
+                    </label>
                 </div>
             </div>
 

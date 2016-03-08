@@ -1,12 +1,14 @@
 // Import
 import {Controller} from 'microscope-web';
+import uuid from 'node-uuid';
 
 class HomeController extends Controller {
 	
 	get routes(){
 		return {
 			'get /': 'index',
-            'get /demo': 'demo'
+            'get /demo': 'demo',
+			'get /try': 'tryIt'
 		}
 	}
 
@@ -21,6 +23,11 @@ class HomeController extends Controller {
 	demo(request, response){
         response.locals.user = {username: 'anonymous'};
 		response.render('home/demo');
+	}
+	
+	tryIt(request, response){
+		var id = uuid.v4();
+		response.redirect('/demo/#/' + id);
 	}
 }
 
