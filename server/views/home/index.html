@@ -1,13 +1,28 @@
 {% extends '../layout.html' %} {% block body %}
 
-<div class="jumbotron text-center">
+<style>
+    .jumbo {
+        background: url('images/wallpaper.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        margin-bottom: 40px;
+    }
+    
+    .navbar {
+        margin-bottom: 0px;
+    }
+</style>
+
+<div class="text-center jumbo">
     <div class="container">
         <img src="./images/logo.png" width="50%" alt="">
-        <p class="lead">digital meeting</p>
         <p>
             <a href="/auth/register" class="btn btn-primary btn-lg">Inscription</a>
             <a href="/try" class="btn btn-default btn-lg">Try it !</a>
         </p>
+        <br><br>
     </div>
 </div>
 
