@@ -9,6 +9,11 @@ var authenticate = passport.authenticate('local', {
 	failureRedirect: '/auth/login'
 });
 
+var fbAuth = passport.authenticate('facebook', { 
+    successRedirect: '/',
+    failureRedirect: 'auth/login'
+});
+ 
 // Authentication controller
 class AuthController extends Controller {
 
@@ -21,6 +26,10 @@ class AuthController extends Controller {
 			'get /login': 'login',
 			'get /logout': 'logout',
 			'get /register': 'register',
+            
+            'get /facebook': [passport.authenticate('facebook')],
+            'get /facebook/callback': [fbAuth],
+            
 			'get /settings': [authorize, 'settings'],
 			'post /update': [authorize, 'update'],
 			'post /signin': [authenticate],

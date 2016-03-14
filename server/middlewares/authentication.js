@@ -1,5 +1,6 @@
 import passport from 'passport';
 import {Strategy} from 'passport-local';
+import FacebookStrategy from 'passport-facebook';
 import session from 'express-session';
 import flash from 'connect-flash';
 import User from '../models/User';
@@ -26,17 +27,41 @@ passport.use(new Strategy(
     }
 ));
 
-// passport.use(new FacebookStrategy({
-//     clientID: FACEBOOK_APP_ID,
-//     clientSecret: FACEBOOK_APP_SECRET,
-//     callbackURL: "http://localhost:3000/auth/facebook/callback"
-// },
-//     function(accessToken, refreshToken, profile, cb) {
-//         User.findOrCreate({ facebookId: profile.id }, function(err, user) {
-//             return cb(err, user);
-//         });
-//     }
-// ));
+passport.use(new FacebookStrategy({
+    clientID: '1017990444940154',
+    clientSecret: '5342ad97580ddbe01eefb992fc1c69e8',
+    callbackURL: "https://veo-app.herokuapp.com/auth/facebook/callback",
+    profileFields: ['id', 'displayName', 'email']
+},
+    function(accessToken, refreshToken, profile, cb) {
+        console.log(profile);
+
+        User.findOne({ 'facebookId': profile.id }, function(err, user) {
+            if (err) {
+                return cb(err, null);
+            }
+
+            if (user) {
+                return cb(null, user);
+            }
+            else {
+
+                let newUser = new User({
+                    username: profile.displayName,
+                    facebookId: profile.id,
+                    password: 'facebook',
+                    email: profile.displayName + '@facebook.com',
+                    provider: 'facebook'
+                });
+
+                newUser.save(function(err) {
+                    if (err){ throw err; }
+                    return cb(null, newUser);
+                });
+            }
+        });
+    }
+));
 
 // serialize user
 passport.serializeUser(function(user, done) {

@@ -1,17 +1,31 @@
 {% extends '../layout.html' %} {% block body %}
 
 <div class="container">
-	<form action="/auth/signin" method="post">
-		<div class="form-group">
-			<label for="username">Username</label>
-			<input type="text" class="form-control" id="username" placeholder="Username" name="username">
-		</div>
-		<div class="form-group">
-			<label for="password">Password</label>
-			<input type="password" class="form-control" id="password" placeholder="Password" name="password">
-		</div>
-		<button type="submit" class="btn btn-default">Login</button>
-	</form>
+    <div class="page-header">
+        <h1>Login</h1>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <form action="/auth/signin" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+                </div>
+                <button type="submit" class="btn btn-default">Login</button>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <label for="">Social</label><br>
+            <a class="btn btn-primary" href="/auth/facebook">Facebook login</a>
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}
