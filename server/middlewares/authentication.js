@@ -30,7 +30,7 @@ passport.use(new Strategy(
 passport.use(new FacebookStrategy({
     clientID: '1017990444940154',
     clientSecret: '5342ad97580ddbe01eefb992fc1c69e8',
-    callbackURL: "https://veo-app.herokuapp.com/auth/facebook/callback",
+    callbackURL: "https://bubblhub.herokuapp.com/auth/facebook/callback",
     profileFields: ['id', 'displayName', 'email']
 },
     function(accessToken, refreshToken, profile, cb) {
